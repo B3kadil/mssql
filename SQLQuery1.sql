@@ -1,49 +1,48 @@
---создаём таблицу container
-CREATE TABLE container(
+-- Creating table container
+CREATE TABLE container (
 id INT PRIMARY KEY,
 number INT,
-тип NVARCHAR(MAX),
-длина INT,
-ширина INT,
-высота INT,
-вес INT,
-пустой_непустой BIT,
-дата_поступления DATETIME
+type NVARCHAR(MAX),
+length INT,
+width INT,
+height INT,
+weight INT,
+empty_not_empty BIT,
+arrival_date DATETIME
 );
 
---создаём таблицу operation
-CREATE TABLE operation(
+-- Creating table operation
+CREATE TABLE operation (
 id INT PRIMARY KEY,
-id_container INT FOREIGN KEY REFERENCES container(id),
-дата_начала_операции DATETIME,
-дата_окончания_операции DATETIME,
-тип_операции NVARCHAR(MAX),
-ФИО_оператора NVARCHAR(MAX),
-место_инспекции NVARCHAR(MAX)
+container_id INT FOREIGN KEY REFERENCES container(id),
+operation_start_date DATETIME,
+operation_end_date DATETIME,
+operation_type NVARCHAR(MAX),
+operator_name NVARCHAR(MAX),
+inspection_location NVARCHAR(MAX)
 );
 
---преобразование в json с помощью запроса(CAST, CONVERT)
---контейнер
-SELECT 
-    '{ "id": ' + CAST(id AS NVARCHAR) + 
-    ', "number": ' + CAST(number AS NVARCHAR) + 
-    ', "тип": "' + тип + '"' + 
-    ', "Длина": ' + CAST(длина AS NVARCHAR) + 
-    ', "ширина": ' + CAST(ширина AS NVARCHAR) + 
-    ', "высота": ' + CAST(высота AS NVARCHAR) + 
-    ', "вес": ' + CAST(вес AS NVARCHAR) + 
-    ', "пустой": ' + CAST(пустой_непустой AS NVARCHAR) + 
-    ', "дата_поступления": "' + CONVERT(NVARCHAR, дата_поступления, 120) + '" }' AS JSONData
+-- Conversion to JSON using queries (CAST, CONVERT)
+-- container
+SELECT
+'{ "id": ' + CAST(id AS NVARCHAR) +
+', "number": ' + CAST(number AS NVARCHAR) +
+', "type": "' + type + '"' +
+', "length": ' + CAST(length AS NVARCHAR) +
+', "width": ' + CAST(width AS NVARCHAR) +
+', "height": ' + CAST(height AS NVARCHAR) +
+', "weight": ' + CAST(weight AS NVARCHAR) +
+', "empty": ' + CAST(empty_not_empty AS NVARCHAR) +
+', "arrival_date": "' + CONVERT(NVARCHAR, arrival_date, 120) + '" }' AS JSONData
 FROM container;
 
---операции (выбирается все данные определенного контейне)
-SELECT 
-    '{ "id": ' + CAST(id AS NVARCHAR) + 
-    ', "id_container": ' + CAST(id_container AS NVARCHAR) + 
-    ', "дата_начала_операции": "' + CONVERT(NVARCHAR, Дата_начала_операции, 120) + '"' + 
-    ', "дата_окончания_операции": "' + CONVERT(NVARCHAR, Дата_окончания_операции, 120) + '"' + 
-    ', "тип_операции": "' + Тип_операции + '"' + 
-    ', "ФИО_оператора": "' + ФИО_оператора + '"' + 
-    ', "место_инспекции": "' + Место_инспекции + '" }' AS JSONData
-FROM operation WHERE id_container = 1;
-
+-- operations (selecting all data for a specific container)
+SELECT
+'{ "id": ' + CAST(id AS NVARCHAR) +
+', "container_id": ' + CAST(container_id AS NVARCHAR) +
+', "operation_start_date": "' + CONVERT(NVARCHAR, operation_start_date, 120) + '"' +
+', "operation_end_date": "' + CONVERT(NVARCHAR, operation_end_date, 120) + '"' +
+', "operation_type": "' + operation_type + '"' +
+', "operator_name": "' + operator_name + '"' +
+', "inspection_location": "' + inspection_location + '" }' AS JSONData
+FROM operation WHERE container_id = 1;
